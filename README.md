@@ -68,6 +68,12 @@ public/images Reused Sunesis image assets
 
 ## Data and authentication
 
-This recreation is client-side and does not include a backend service. Users, topics, slides, and board entries are stored in browser storage for local development. Authentication state uses session storage with an optional remembered-user value in local storage.
+The frontend remains usable without a backend for local development: users, topics, slides, and board entries are stored in browser storage. Authentication state uses session storage with an optional remembered-user value in local storage.
+
+The separate `S-v3 Backend` service provides PostgreSQL-backed persistence and JWT authentication for deployment. Set `NEXT_PUBLIC_API_URL` in `.env.local` to the deployed API URL when wiring the production client to the backend.
+
+## Vercel deployment
+
+Deploy this directory as a Vercel project using the default Next.js settings. Add `NEXT_PUBLIC_API_URL` as a production environment variable if the deployed frontend should use the backend service.
 
 The original `sunesis` project is kept separate and is not modified by this repository.
