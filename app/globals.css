@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
-html { scroll-behavior: smooth; }
-body { margin: 0; background: #fbf5f4; color: #2b1416; font-family: Inter, Arial, sans-serif; }
-button, input, textarea, select { font: inherit; }
+html {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  background: #fbf5f4;
+  color: #2b1416;
+  font-family: Inter, Arial, sans-serif;
+}
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}

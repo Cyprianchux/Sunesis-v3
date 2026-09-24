@@ -26,13 +26,22 @@ function write<T>(key: string, value: T) {
 export async function hashPassword(value: string) {
   const data = new TextEncoder().encode(value);
   const buffer = await crypto.subtle.digest("SHA-256", data);
-  return Array.from(new Uint8Array(buffer)).map((byte) => byte.toString(16).padStart(2, "0")).join("");
+  return Array.from(new Uint8Array(buffer))
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
 }
 
-export function getUsers() { return read<Record<string, User>>(keys.users, {}); }
+export function getUsers() {
+  return read<Record<string, User>>(keys.users, {});
+}
 export function getCurrentUser() {
   if (typeof window === "undefined") return null;
-  return window.sessionStorage.getItem(keys.currentUser) || (window.localStorage.getItem(keys.remembered) ? window.localStorage.getItem(keys.currentUser) : null);
+  return (
+    window.sessionStorage.getItem(keys.currentUser) ||
+    (window.localStorage.getItem(keys.remembered)
+      ? window.localStorage.getItem(keys.currentUser)
+      : null)
+  );
 }
 export function setCurrentUser(user: User, remember: boolean) {
   window.sessionStorage.setItem(keys.currentUser, user.username);
@@ -51,9 +60,21 @@ export function saveUser(user: User) {
   users[user.username] = user;
   write(keys.users, users);
 }
-export function getTopics() { return read<Topic[]>(keys.topics, []); }
-export function saveTopics(value: Topic[]) { write(keys.topics, value); }
-export function getSlides() { return read<Slide[]>(keys.slides, []); }
-export function saveSlides(value: Slide[]) { write(keys.slides, value); }
-export function getBoardEntries() { return read<BoardEntry[]>(keys.board, []); }
-export function saveBoardEntries(value: BoardEntry[]) { write(keys.board, value); }
+export function getTopics() {
+  return read<Topic[]>(keys.topics, []);
+}
+export function saveTopics(value: Topic[]) {
+  write(keys.topics, value);
+}
+export function getSlides() {
+  return read<Slide[]>(keys.slides, []);
+}
+export function saveSlides(value: Slide[]) {
+  write(keys.slides, value);
+}
+export function getBoardEntries() {
+  return read<BoardEntry[]>(keys.board, []);
+}
+export function saveBoardEntries(value: BoardEntry[]) {
+  write(keys.board, value);
+}

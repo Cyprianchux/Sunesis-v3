@@ -36,26 +36,26 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Available scripts
 
-| Script | Description |
-| --- | --- |
-| `npm run dev` | Start the Next.js development server |
-| `npm run build` | Create a production build |
-| `npm run start` | Serve the production build |
-| `npm run lint` | Run the configured lint command |
+| Script          | Description                          |
+| --------------- | ------------------------------------ |
+| `npm run dev`   | Start the Next.js development server |
+| `npm run build` | Create a production build            |
+| `npm run start` | Serve the production build           |
+| `npm run lint`  | Run the configured lint command      |
 
 ## Routes
 
-| Route | Purpose |
-| --- | --- |
-| `/` | Landing page and authentication |
-| `/account` | Account details and session controls |
-| `/slide-admin` | Manage topics and slides |
-| `/slide-view` | View slide-based content |
-| `/web-view` | View content as a web page |
-| `/board` | Create and manage writing board entries |
-| `/footer-pages` | Footer-linked information pages |
-| `/reset-password` | Password reset state |
-| `/verify-email` | Email verification state |
+| Route             | Purpose                                 |
+| ----------------- | --------------------------------------- |
+| `/`               | Landing page and authentication         |
+| `/account`        | Account details and session controls    |
+| `/slide-admin`    | Manage topics and slides                |
+| `/slide-view`     | View slide-based content                |
+| `/web-view`       | View content as a web page              |
+| `/board`          | Create and manage writing board entries |
+| `/footer-pages`   | Footer-linked information pages         |
+| `/reset-password` | Password reset state                    |
+| `/verify-email`   | Email verification state                |
 
 ## Project structure
 
