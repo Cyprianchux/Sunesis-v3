@@ -1,10 +1,13 @@
-const allowedTags = /<\/?(?:div|p|br|strong|b|em|i|ul|ol|li)>/i;
+const allowedTag = /^<\/?(div|p|br|strong|b|em|i|ul|ol|li)(?:\s[^>]*)?>$/i;
 
 export function sanitizeRichText(value: string) {
   return value
     .replace(/<!--[\s\S]*?-->/g, "")
-    .replace(/<[^>]*>/g, (tag) => (allowedTags.test(tag) ? tag : ""))
-    .replace(/\son\w+=(?:"[^"]*"|'[^']*'|[^\s>]*)/gi, "");
+    .replace(/<(script|style)[^>]*>[\s\S]*?<\/\1>/gi, "")
+    .replace(/<[^>]*>/g, (tag) => {
+      const match = tag.match(allowedTag);
+      return match ? `<${tag.startsWith("</") ? "/" : ""}${match[1]}>` : "";
+    });
 }
 
 export function plainTextToRichHtml(value: string) {
