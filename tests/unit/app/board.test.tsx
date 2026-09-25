@@ -8,6 +8,9 @@ vi.mock("../../../lib/storage", () => ({
   getBoardEntries: () => [],
   saveBoardEntries: vi.fn(),
 }));
+vi.mock("next/navigation", () => ({
+  useSearchParams: () => new URLSearchParams(),
+}));
 import BoardPage from "../../../app/(workspace)/board/page";
 
 describe("BoardPage", () => {

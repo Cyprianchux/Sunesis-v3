@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import { Toast } from "../../../components/ui";
 import { WorkspaceGuard } from "../../../components/workspace-guard";
 import { getBoardEntries, saveBoardEntries } from "../../../lib/storage";
@@ -54,14 +56,18 @@ function ToolButton({
   );
 }
 
-export default function BoardPage() {
+function BoardContent() {
+  const searchParams = useSearchParams();
   const [content, setContent] = useState("");
   const [entries, setEntries] = useState<BoardEntry[]>([]);
   const [light, setLight] = useState(false);
   const [fontSize, setFontSize] = useState(32);
   const [alignment, setAlignment] = useState<"left" | "center" | "right">("left");
   const [notice, setNotice] = useState("");
+  const [matchIndex, setMatchIndex] = useState(0);
   const editorRef = useRef<HTMLDivElement>(null);
+  const searchMatchesRef = useRef<TextMatch[]>([]);
+  const searchQuery = searchParams?.get("search") || "";
 
   useEffect(() => {
     setEntries(getBoardEntries());
@@ -98,6 +104,45 @@ export default function BoardPage() {
   const updateContent = () => {
     if (editorRef.current) setContent(editorRef.current.innerText.replace(/\u00a0/g, " "));
   };
+
+  useEffect(() => {
+    searchMatchesRef.current = editorRef.current
+      ? findTextMatches(editorRef.current, searchQuery)
+      : [];
+    setMatchIndex(0);
+  }, [content, searchQuery]);
+
+  useEffect(() => {
+    const match = searchMatchesRef.current[matchIndex];
+    if (!match || !editorRef.current) return;
+    const selection = window.getSelection();
+    if (!selection) return;
+    const range = document.createRange();
+    range.setStart(match.node, match.start);
+    range.setEnd(match.node, match.end);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    const rect = range.getBoundingClientRect();
+    const editorRect = editorRef.current.getBoundingClientRect();
+    editorRef.current.scrollTop += rect.top - editorRect.top - editorRect.height / 3;
+  }, [content, matchIndex, searchQuery]);
+
+  useEffect(() => {
+    const handleSearchNavigation = (event: globalThis.KeyboardEvent) => {
+      if (
+        !searchMatchesRef.current.length ||
+        (event.key !== "ArrowDown" && event.key !== "ArrowUp")
+      )
+        return;
+      event.preventDefault();
+      setMatchIndex((current) => {
+        const count = searchMatchesRef.current.length;
+        return event.key === "ArrowDown" ? (current + 1) % count : (current - 1 + count) % count;
+      });
+    };
+    window.addEventListener("keydown", handleSearchNavigation);
+    return () => window.removeEventListener("keydown", handleSearchNavigation);
+  }, []);
 
   const setEditorContent = (value: string) => {
     if (editorRef.current) {
@@ -139,12 +184,14 @@ export default function BoardPage() {
       updateContent();
       return;
     }
+
     if (currentLine.startsWith("• ")) {
       event.preventDefault();
       document.execCommand("insertParagraph");
       document.execCommand("insertText", false, "• ");
       updateContent();
     }
+
   };
 
   const addBullet = () => {
@@ -273,4 +320,39 @@ export default function BoardPage() {
       </div>
     </WorkspaceGuard>
   );
+}
+
+export default function BoardPage() {
+  return (
+    <Suspense fallback={null}>
+      <BoardContent />
+    </Suspense>
+  );
+}
+
+type TextMatch = { node: Text; start: number; end: number };
+
+function findTextMatches(root: HTMLElement, query: string): TextMatch[] {
+  const terms = query
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(Boolean);
+  if (!terms.length) return [];
+  const matches: TextMatch[] = [];
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  let node: Node | null = walker.nextNode();
+  while (node) {
+    const textNode = node as Text;
+    const value = textNode.data.toLowerCase();
+    terms.forEach((term) => {
+      let start = value.indexOf(term);
+      while (start !== -1) {
+        matches.push({ node: textNode, start, end: start + term.length });
+        start = value.indexOf(term, start + term.length);
+      }
+    });
+    node = walker.nextNode();
+  }
+  return matches;
 }
