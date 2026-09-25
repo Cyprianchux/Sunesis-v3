@@ -16,32 +16,32 @@ Sunesis v3 is a TypeScript recreation of the Sunesis learning workspace, built w
 ## Requirements
 
 - Node.js 18.18 or later
-- npm
+- pnpm 11 or later
 
 ## Getting started
 
 Install dependencies:
 
 ```bash
-npm install
+pnpm install
 ```
 
 Start the development server:
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Available scripts
 
-| Script          | Description                          |
-| --------------- | ------------------------------------ |
-| `npm run dev`   | Start the Next.js development server |
-| `npm run build` | Create a production build            |
-| `npm run start` | Serve the production build           |
-| `npm run lint`  | Run the configured lint command      |
+| Script        | Description                          |
+| ------------- | ------------------------------------ |
+| `pnpm dev`   | Start the Next.js development server |
+| `pnpm build` | Create a production build            |
+| `pnpm start` | Serve the production build           |
+| `pnpm lint`  | Run the configured lint command      |
 
 ## Routes
 
