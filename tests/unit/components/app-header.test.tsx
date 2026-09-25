@@ -7,9 +7,13 @@ const { push, logout } = vi.hoisted(() => ({
 }));
 vi.mock("next/navigation", () => ({
   usePathname: () => "/account",
-  useRouter: () => ({ push }),
+  useRouter: () => ({ push, replace: vi.fn() }),
 }));
-vi.mock("../../../lib/storage", () => ({ logout }));
+vi.mock("../../../lib/storage", () => ({
+  getSlides: () => [],
+  getTopics: () => [],
+  logout,
+}));
 
 import { AppHeader } from "../../../components/app-header";
 
